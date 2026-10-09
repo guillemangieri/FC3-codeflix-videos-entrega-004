@@ -1,0 +1,186 @@
+## valid uuid = 8f4b7b9c-3f7a-4b6c-8b0c-1c9c5b8b9b6a
+
+### 
+# @name createCategory
+POST http://localhost:3000/categories
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Category 1",
+    "description": "Description 1"
+}
+
+###
+
+@categoryId = {{createCategory.response.body.data.id}}
+
+###
+GET http://localhost:3000/categories
+Authorization: Bearer {{jwtToken}}
+
+###
+GET http://localhost:3000/categories/8f4b7b9c-3f7a-4b6c-8b0c-1c9c5b8b9b6a
+
+
+### 
+# @name createGenre
+POST http://localhost:3000/genres
+Content-Type: application/json
+
+{
+    "name": "Genre 1",
+    "categories_id": [
+        "{{categoryId}}"
+    ]
+}
+
+###
+
+@genreId = {{createGenre.response.body.data.id}}
+
+
+###
+
+PATCH http://localhost:3000/genres/{{genreId}}
+Content-Type: application/json
+
+{
+    "name": "Genre 1aaaa",
+    "categories_id": [
+        "{{categoryId}}"
+    ]
+}
+
+###
+
+DELETE http://localhost:3000/genres/{{genreId}}
+
+###
+
+# @name createCastMember
+POST http://localhost:3000/cast-members
+Content-Type: application/json
+
+{
+    "name": "Cast Member 1",
+    "type": 1
+}
+
+###
+
+@castMemberId = {{createCastMember.response.body.data.id}}
+
+
+###
+# @name createVideo
+POST http://localhost:3000/videos
+Content-Type: application/json
+
+{
+    "title": "Video 1",
+    "description": "Description 1",
+    "year_launched": 2020,
+    "is_opened": false,
+    "rating": "L",
+    "duration": 90,
+    "categories_id": [
+        "{{categoryId}}"
+    ],
+    "genres_id": [
+        "{{genreId}}"
+    ],
+    "cast_members_id": [
+        "{{castMemberId}}"
+    ]
+}
+
+###
+
+@videoId = {{createVideo.response.body.data.id}}
+
+###
+
+GET http://localhost:3000/videos/{{videoId}}
+
+
+###
+# @name updateVideo
+PATCH http://localhost:3000/videos/{{videoId}}
+Content-Type: application/json
+
+{
+    "title": "Video 1aaaa",
+    "description": "Description 1aaaa",
+    "year_launched": 2021,
+    "is_opened": false,
+    "rating": "L",
+    "duration": 90,
+    "categories_id": [
+        "{{categoryId}}"
+    ],
+    "genres_id": [
+        "{{genreId}}"
+    ],
+    "cast_members_id": [
+        "{{castMemberId}}"
+    ]
+}
+
+###
+
+###
+# @name uploadVideo
+PATCH http://localhost:3000/videos/{{videoId}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary1234
+
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="video"; filename="video.mp4"
+Content-Type: video/mp4
+
+< ./package.json
+------WebKitFormBoundary1234--
+
+
+###
+GET http://localhost:3000/fake-event
+
+###
+GET http://localhost:3000/rabbitmq-fake
+
+###
+
+### Dentro do Dev Container, use keycloak:8080 pela rede compartilhada.
+### Fora do container, use localhost:8080.
+### docker compose -f docker-compose.keycloak.yaml up
+POST http://keycloak:8080/realms/codeflix/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+username=admin@user.com
+&password=secret
+&grant_type=password
+&client_id=codeflix-admin-frontend
+
+### configuração do openid connect server
+GET http://keycloak:8080/realms/codeflix/.well-known/openid-configuration
+
+### certificados
+GET http://keycloak:8080/realms/codeflix/protocol/openid-connect/certs
+
+###
+POST http://localhost:3000/auth
+Content-Type: application/json
+
+{
+    "email": "admin@user.com",
+    "password": "123456"
+}
+
+###
+
+@jwtToken = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiYWRtaW4tY2F0YWxvZyJdfSwiaWF0IjoxNzkxNDEwNTQ1LCJleHAiOjE3OTE0OTY5NDV9.JonaJTu7o6vnWmceLzH6dc45mQ-CM_5K7U9Ds4I3oAseqEeBs-kA1o2UaPNRPNuBQSPnMTQbueHPvEM86V-N0_lBHkg1wBceW_StFWViA55banEGxodicpEE1CH3sZ4XZwu_bDZ_8-KMZzmtYETVfrxsfX4Okp6ehoAXtK0eF0twInzzzBzBHwdKsngUI8b3xavJ7lqed9BVRlpAvOUQTB2jtGRRSMWbLZKYfXzWbUFzBycr97cvAejlG0EHd6CpFuITd3CLUiKJ-hLdsOa-BJ5DIrtDv1Q1-LuizOqaIWB19OUHROUd4ylHJbCWh7-_bK_SCQDPslAktNEkOrBPnQ
+
+###
+GET http://localhost:3000/auth
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}

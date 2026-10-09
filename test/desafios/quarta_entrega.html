@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Quarta entrega</h1>
+    <div class="css-1fzjsgs">
+        <p>&nbsp;Neste desafio, você deve avançar no desenvolvimento da API implementando os endpoints (CRUD) completos
+            para as entidades <strong>Categoria</strong> e <strong>Cast Member</strong> (Membros do Elenco). Utilize a
+            implementação de Categoria vista em aula como referência arquitetural para replicar os padrões em Cast
+            Member.</p>
+        <p><strong>Tecnologias Obrigatórias</strong></p>
+        <ul>
+            <li>
+                <p><strong>Linguagem:</strong> TypeScript</p>
+            </li>
+            <li>
+                <p><strong>Testes:</strong> Jest</p>
+            </li>
+            <li>
+                <p><strong>Validação:</strong> Class Validator</p>
+            </li>
+        </ul>
+        <p>&nbsp;</p>
+        <p><strong>Requisitos e Comportamento</strong></p>
+        <ol>
+            <li>
+                <p><strong>Entidade Cast Member</strong> Você deve criar a entidade CastMember representando os atores e
+                    diretores do catálogo. Ela deve possuir os seguintes campos e regras:</p>
+            </li>
+        </ol>
+        <p>&nbsp;</p>
+
+        <ul>
+            <li>
+                <p><strong>name:</strong> Tipo string, obrigat&oacute;rio, com tamanho m&aacute;ximo de <strong>255
+                        caracteres</strong>.</p>
+            </li>
+            <li>
+                <p><strong>type:</strong> Deve ser implementado como um <strong>Value Object</strong> ou
+                    <strong>Enum</strong>.
+                </p>
+
+                <ul>
+                    <li>
+                        <p>Valor 1: Representa <strong>Diretor</strong>.</p>
+                    </li>
+                    <li>
+                        <p>Valor 2: Representa <strong>Ator</strong>.</p>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p><strong>created_at:</strong> Data de cria&ccedil;&atilde;o do registro.</p>
+            </li>
+            <li>
+                <p><strong>Valida&ccedil;&otilde;es:</strong> Aplique todas as valida&ccedil;&otilde;es de
+                    dom&iacute;nio
+                    necess&aacute;rias (campos obrigat&oacute;rios, tipos, tamanhos) conforme demonstrado no
+                    m&oacute;dulo
+                    de Categoria.</p>
+            </li>
+        </ul>
+        </li>
+        <li>
+            <p><strong>Funcionalidades da API (CRUD)</strong> Implemente os endpoints para criar, atualizar, buscar e
+                remover Cast Members. Para o endpoint de <strong>Listagem</strong>, deve ser poss&iacute;vel:</p>
+
+            <ul>
+                <li>
+                    <p><strong>Ordenar</strong> os resultados por name ou created_at.</p>
+                </li>
+                <li>
+                    <p><strong>Filtrar</strong> os resultados por name ou type.</p>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Qualidade e Testes (QA)</strong></p>
+
+            <ul>
+                <li>
+                    <p>Aplicar a <strong>Pir&acirc;mide de Testes</strong> completa (Unit&aacute;rios,
+                        Integra&ccedil;&atilde;o e E2E, conforme estrutura do curso).</p>
+                </li>
+                <li>
+                    <p>Manter a cobertura de testes (Code Coverage) em no m&iacute;nimo <strong>80%</strong>.</p>
+                </li>
+                <li>
+                    <p>Garantir que n&atilde;o existam erros de tipagem no projeto.</p>
+                </li>
+            </ul>
+        </li>
+</body>
+
+</html>

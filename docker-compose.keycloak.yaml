@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1
+    networks:
+      - default
+      - app_network
+    command: start-dev
+    ports:
+      - 8080:8080
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+
+volumes:
+  keycloak_data:
+    name: app_keycloak_data
+
+networks:
+  app_network:
+    external: true
+    name: 001-fc3-admin-catalogo-de-videos_default

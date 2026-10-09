@@ -1,0 +1,27 @@
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      labels.dedot: true
+      templates:
+        - condition:
+            equals:
+              docker.container.labels.filebeat_collector: "true"
+          config:
+            - type: container
+              paths:
+                - "/var/lib/docker/containers/${data.docker.container.id}/*.log"
+              processors:
+                - add_docker_metadata:
+                    host: "unix:///var/run/docker.sock"
+                - decode_json_fields:
+                    fields: ["message"]
+                    target: "app"
+                    overwrite_keys: false
+                    add_error_key: true
+                    when.regexp:
+                      message: '^\{'
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+logging.metrics.enabled: false
