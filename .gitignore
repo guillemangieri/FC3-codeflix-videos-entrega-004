@@ -50,3 +50,15 @@ lerna-debug.log*
 
 # Local Codex history, configuration and credentials
 /.codex-local/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Environment fixture used by configuration tests
+!src/nest-modules/config-module/__tests__/.env.fake
+
+# TypeScript incremental build cache
+*.tsbuildinfo
