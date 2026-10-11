@@ -1,4 +1,5 @@
 import {
+  UseGuards,
   Controller,
   Get,
   Post,
@@ -27,6 +28,9 @@ import { CreateCastMemberDto } from './dto/create-cast-member.dto';
 import { SearchCastMemberDto } from './dto/search-cast-members.dto';
 import { UpdateCastMemberInput } from '@core/cast-member/application/use-cases/update-cast-members/update-cast-member.input';
 
+import { AuthGuard } from '../auth-module/auth.guard';
+
+@UseGuards(AuthGuard)
 @Controller('cast-members')
 export class CastMembersController {
   @Inject(CreateCastMemberUseCase)

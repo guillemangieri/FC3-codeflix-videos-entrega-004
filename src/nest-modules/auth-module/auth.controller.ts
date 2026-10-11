@@ -1,3 +1,4 @@
+/*
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
@@ -11,6 +12,19 @@ export class AuthController {
     return this.authService.login(body.email, body.password);
   }
 
+  @UseGuards(AuthGuard)
+  @Get()
+  protected() {
+    return { name: 'ok' };
+  }
+}
+*/
+
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from './auth.guard';
+
+@Controller('auth')
+export class AuthController {
   @UseGuards(AuthGuard)
   @Get()
   protected() {

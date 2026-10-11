@@ -1,5 +1,7 @@
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { VideoOutput } from '../../core/video/application/use-cases/common/video-output';
+import { CollectionPresenter } from '../shared-module/collection.presenter';
+import { ListVideosOutput } from '../../core/video/application/use-cases/list-videos/list-videos.use-case';
 
 export class VideoPresenter implements VideoOutput {
   id: string;
@@ -41,5 +43,16 @@ export class VideoPresenter implements VideoOutput {
     this.cast_members_id = output.cast_members_id;
     this.cast_members = output.cast_members;
     this.created_at = output.created_at;
+  }
+}
+
+export class VideoCollectionPresenter extends CollectionPresenter {
+  @Type(() => VideoPresenter)
+  data: VideoPresenter[];
+
+  constructor(output: ListVideosOutput) {
+    const { items, ...pagination } = output;
+    super(pagination);
+    this.data = items.map((item) => new VideoPresenter(item));
   }
 }

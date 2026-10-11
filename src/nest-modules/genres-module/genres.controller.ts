@@ -1,4 +1,5 @@
 import {
+  UseGuards,
   Controller,
   Get,
   Post,
@@ -23,6 +24,9 @@ import { ListGenresUseCase } from '../../core/genre/application/use-cases/list-g
 import { UpdateGenreInput } from '../../core/genre/application/use-cases/update-genre/update-genre.input';
 import { GenreOutput } from '../../core/genre/application/use-cases/common/genre-output';
 
+import { AuthGuard } from '../auth-module/auth.guard';
+
+@UseGuards(AuthGuard)
 @Controller('genres')
 export class GenresController {
   @Inject(CreateGenreUseCase)

@@ -1,16 +1,20 @@
 import {
+  UseGuards,
   Controller,
   Get,
   Post,
   Body,
   Patch,
   Param,
+  Query,
   Inject,
   ParseUUIDPipe,
   UploadedFiles,
   ValidationPipe,
   UseInterceptors,
   BadRequestException,
+  HttpCode,
+  Delete,
 } from '@nestjs/common';
 import { CreateVideoUseCase } from '../../core/video/application/use-cases/create-video/create-video.use-case';
 import { UpdateVideoUseCase } from '../../core/video/application/use-cases/update-video/update-video.use-case';
@@ -23,8 +27,14 @@ import { UpdateVideoDto } from './dto/update-video.dto';
 import { UpdateVideoInput } from '../../core/video/application/use-cases/update-video/update-video.input';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { UploadAudioVideoMediaInput } from '../../core/video/application/use-cases/upload-audio-video-medias/upload-audio-video-media.input';
-import { VideoPresenter } from './videos.presenter';
+import { VideoPresenter, VideoCollectionPresenter } from './videos.presenter';
+import { ListVideosUseCase } from '../../core/video/application/use-cases/list-videos/list-videos.use-case';
+import { SearchVideosDto } from './dto/search-videos.dto';
+import { DeleteVideoUseCase } from '../../core/video/application/use-cases/delete-video/delete-video.use-case';
 
+import { AuthGuard } from '../auth-module/auth.guard';
+
+@UseGuards(AuthGuard)
 @Controller('videos')
 export class VideosController {
   @Inject(CreateVideoUseCase)
@@ -42,6 +52,12 @@ export class VideosController {
   @Inject(GetVideoUseCase)
   private getUseCase: GetVideoUseCase | undefined;
 
+  @Inject(ListVideosUseCase)
+  private listUseCase!: ListVideosUseCase;
+
+  @Inject(DeleteVideoUseCase)
+  private deleteUseCase!: DeleteVideoUseCase;
+
   @Post()
   async create(@Body() createVideoDto: CreateVideoDto) {
     const { id } = await this.createUseCase!.execute(createVideoDto);
@@ -49,6 +65,22 @@ export class VideosController {
     //VideoPresenter
     const output = await this.getUseCase!.execute({ id });
     return new VideoPresenter(output);
+  }
+
+  @Get()
+  async search(@Query() query: SearchVideosDto) {
+    const output = await this.listUseCase.execute({
+      page: query.page,
+      per_page: query.per_page,
+      filter: {
+        title: query.title,
+        categories_id: query.categories_id,
+        genres_id: query.genres_id,
+        cast_members_id: query.cast_members_id,
+      },
+    });
+
+    return new VideoCollectionPresenter(output);
   }
 
   @Get(':id')
@@ -157,6 +189,15 @@ export class VideosController {
       await this.uploadImageMedia!.execute(input);
     }
     return await this.getUseCase!.execute({ id });
+  }
+
+  @HttpCode(204)
+  @Delete(':id')
+  async remove(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 422 }))
+    id: string,
+  ): Promise<void> {
+    await this.deleteUseCase.execute({ id });
   }
 
   @UseInterceptors(

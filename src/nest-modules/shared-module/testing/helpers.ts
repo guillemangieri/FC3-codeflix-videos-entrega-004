@@ -12,6 +12,17 @@ import {
   GenreCategoryModel,
 } from '@core/genre/infra/db/sequelize/genre-model';
 import { CastMemberModel } from '@core/cast-member/infra/db/sequelize/cast-members-sequelize';
+import {
+  VideoModel,
+  VideoCategoryModel,
+  VideoGenreModel,
+  VideoCastMemberModel,
+} from '../../../core/video/infra/db/sequelize/video.model';
+import { ImageMediaModel } from '../../../core/video/infra/db/sequelize/image-media.model';
+import { AudioVideoMediaModel } from '../../../core/video/infra/db/sequelize/audio-video-media.model';
+import { AuthGuard } from '../../auth-module/auth.guard';
+import { ExecutionContext } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 export function startApp() {
   let _app: INestApplication;
@@ -33,6 +44,12 @@ export function startApp() {
               GenreModel,
               GenreCategoryModel,
               CastMemberModel,
+              VideoModel,
+              VideoCategoryModel,
+              VideoGenreModel,
+              VideoCastMemberModel,
+              ImageMediaModel,
+              AudioVideoMediaModel,
             ],
           }),
       })
@@ -42,6 +59,35 @@ export function startApp() {
           return new UnitOfWorkSequelize(sequelize);
         },
         inject: [getConnectionToken()],
+      })
+      /*
+      .overrideGuard(AuthGuard)
+      .useValue({
+        canActivate: () => true,
+      })
+      */
+      .overrideGuard(AuthGuard)
+      .useFactory({
+        inject: [JwtService],
+        factory: (jwtService: JwtService) => {
+          const realGuard = new AuthGuard(jwtService);
+
+          return {
+            canActivate(context: ExecutionContext) {
+              if (context.getType() !== 'http') {
+                return true;
+              }
+
+              const request = context.switchToHttp().getRequest();
+
+              if (request.headers.authorization !== undefined) {
+                return realGuard.canActivate(context);
+              }
+
+              return true;
+            },
+          };
+        },
       })
       .compile();
     const sequelize = moduleFixture.get<Sequelize>(getConnectionToken());

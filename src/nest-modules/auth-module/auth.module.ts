@@ -21,6 +21,9 @@ import { ConfigService } from '@nestjs/config';
           signOptions: {
             algorithm: 'RS256',
           } as any,
+          verifyOptions: {
+            algorithms: ['RS256'],
+          },
         };
       },
       inject: [ConfigService],
@@ -29,5 +32,6 @@ import { ConfigService } from '@nestjs/config';
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthGuard],
+  exports: [AuthGuard],
 })
 export class AuthModule {}

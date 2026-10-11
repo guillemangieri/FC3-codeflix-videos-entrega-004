@@ -1185,4 +1185,62 @@ describe('VideoSequelizeRepository Integration Tests', () => {
     await castMemberRepo.insert(castMember);
     return { category, genre, castMember };
   }
+
+  it('should combine category, genre and cast member filters with AND', async () => {
+    const first = await createRelations();
+    const second = await createRelations();
+
+    const matching = Video.fake()
+      .aVideoWithoutMedias()
+      .addCategoryId(first.category.category_id)
+      .addGenreId(first.genre.genre_id)
+      .addCastMemberId(first.castMember.cast_member_id)
+      .build();
+
+    // Atende gênero e elenco, mas não categoria.
+    const wrongCategory = Video.fake()
+      .aVideoWithoutMedias()
+      .addCategoryId(second.category.category_id)
+      .addGenreId(first.genre.genre_id)
+      .addCastMemberId(first.castMember.cast_member_id)
+      .build();
+
+    // Atende categoria e elenco, mas não gênero.
+    const wrongGenre = Video.fake()
+      .aVideoWithoutMedias()
+      .addCategoryId(first.category.category_id)
+      .addGenreId(second.genre.genre_id)
+      .addCastMemberId(first.castMember.cast_member_id)
+      .build();
+
+    // Atende categoria e gênero, mas não elenco.
+    const wrongCastMember = Video.fake()
+      .aVideoWithoutMedias()
+      .addCategoryId(first.category.category_id)
+      .addGenreId(first.genre.genre_id)
+      .addCastMemberId(second.castMember.cast_member_id)
+      .build();
+
+    await videoRepo.bulkInsert([
+      matching,
+      wrongCategory,
+      wrongGenre,
+      wrongCastMember,
+    ]);
+
+    const result = await videoRepo.search(
+      VideoSearchParams.create({
+        filter: {
+          categories_id: [first.category.category_id.id],
+          genres_id: [first.genre.genre_id.id],
+          cast_members_id: [first.castMember.cast_member_id.id],
+        },
+      }),
+    );
+
+    expect(result.total).toBe(1);
+    expect(result.items.map((video) => video.video_id.id)).toEqual([
+      matching.video_id.id,
+    ]);
+  });
 });
