@@ -19,8 +19,8 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
-  FOLDER_NAME: ${{ github.repository }}_app
+  #IMAGE_NAME: ${{ github.repository }}
+  #FOLDER_NAME: ${{ github.repository }}_app
 
 
 jobs:
@@ -37,6 +37,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Converter nomes das imagens para minúsculas
+        shell: bash
+        run: |
+          repository_lower="${GITHUB_REPOSITORY,,}"
+          echo "IMAGE_NAME=$repository_lower" >> "$GITHUB_ENV"
+          echo "FOLDER_NAME=${repository_lower}_app" >> "$GITHUB_ENV"
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
