@@ -3,9 +3,11 @@ version: '3'
 services:
   
   app:
+    image: ${FOLDER_NAME}
     build: 
       context: .
       dockerfile: Dockerfile.prod
+      target: development
     restart: on-failure
     ports:
       - 3000:3000
