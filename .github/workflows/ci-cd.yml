@@ -28,7 +28,7 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
@@ -124,7 +124,7 @@ jobs:
 
       - name: Bump version and push tag
         id: tagging
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -139,7 +139,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           file: Dockerfile.prod
-          
+
       ## Sign the resulting Docker image digest except on PRs.
       ## This will only write to the public Rekor transparency log when the Docker
       ## repository is public to avoid leaking data.  If you would like to publish
