@@ -98,10 +98,24 @@ jobs:
           target: development
 
       - name: up containers
+          env:
+            GOOGLE_CLOUD_CREDENTIALS: ${{ secrets.GOOGLE_CLOUD_CREDENTIALS }}
+            GOOGLE_CLOUD_STORAGE_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_STORAGE_BUCKET_NAME }}
         run: docker compose -f docker-compose.ci.yaml up -d
 
       - name: wait for mysql
         run: docker compose -f docker-compose.ci.yaml exec -T db mysqladmin ping --silent --wait=30s -uroot -proot
+
+      - name: generate envs
+        run: |
+          docker compose -f docker-compose.ci.yaml exec -u root -T app cp ./envs/.env.test.example ./envs/.env.test
+          docker compose -f docker-compose.ci.yaml exec -u root -T app cp ./envs/.env.e2e.example ./envs/.env.e2e
+
+      - name: run unit and integration tests
+        run: docker compose -f docker-compose.ci.yaml exec -T app npm run test
+
+      - name: run e2e tests
+        run: docker compose -f docker-compose.ci.yaml exec -T app npm run test:e2e -- --runInBand --detectOpenHandles --forceExit
 
       ## Sign the resulting Docker image digest except on PRs.
       ## This will only write to the public Rekor transparency log when the Docker
