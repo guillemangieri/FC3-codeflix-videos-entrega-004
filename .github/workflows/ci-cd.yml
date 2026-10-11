@@ -42,8 +42,9 @@ jobs:
         shell: bash
         run: |
           repository_lower="${GITHUB_REPOSITORY,,}"
+          repository_name="${repository_lower##*/}"
           echo "IMAGE_NAME=$repository_lower" >> "$GITHUB_ENV"
-          echo "FOLDER_NAME=${repository_lower}_app" >> "$GITHUB_ENV"
+          echo "FOLDER_NAME=${repository_name}_app" >> "$GITHUB_ENV"
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
