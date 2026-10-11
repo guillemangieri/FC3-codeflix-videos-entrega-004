@@ -24,8 +24,7 @@ env:
 
 
 jobs:
-  build:
-
+  ci:
     runs-on: ubuntu-latest
     permissions:
       contents: write
