@@ -92,7 +92,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           load: true
-          Dockerfile: Dockerfile.prod
+          #Dockerfile: Dockerfile.prod
+          file: Dockerfile.prod
           target: development
 
       - name: up containers
