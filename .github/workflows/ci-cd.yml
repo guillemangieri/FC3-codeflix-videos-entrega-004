@@ -97,7 +97,7 @@ jobs:
           target: development
 
       - name: up containers
-        run: docker-compose -f docker-compose.ci.yaml up -d
+        run: docker compose -f docker-compose.ci.yaml up -d
 
       - name: wait for mysql
         run: docker compose -f docker-compose.ci.yaml exec -T db mysqladmin ping --silent --wait=30s -uroot -proot
